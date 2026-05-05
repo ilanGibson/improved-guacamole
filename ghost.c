@@ -1,38 +1,16 @@
-void random_movement(void);
+void manhattan_chase(void);
 int ghost_process_direction(char key);
 
 static int previous_move = -1;
 
-void random_movement(void) {
-  static int i = 1;
+void manhattan_chase(void) {
   static int move_count = 0;
   char cmds[] = {'h', 'j', 'l', 'k'};
-  int failed_moves = 0;
-  int valid_move;
+  char optimal_paths[4];
 
-  if (move_count % 3 == 0) {
-    do {
-      int num = (rand() % 4) + 1;
-      i += num;
-    } while ((i % 4) == ((previous_move + 2) % 4) && failed_moves++ < 4);
+  for (int i = 0; i < 4; i++) {
   }
 
-  valid_move = ghost_process_direction(cmds[i % 4]);
-  while (!valid_move) {
-    failed_moves++;
-    do {
-      int num = (rand() % 4) + 1;
-      i += num;
-    } while ((i % 4) == ((previous_move + 2) % 4) && failed_moves < 4);
-    valid_move = ghost_process_direction(cmds[i % 4]);
-  }
-
-  /* for testing */
-  // if ((i % 4) == ((previous_move + 2) % 4))
-  //   printf("i: %d prev: %d fails: %d\t", i, previous_move, failed_moves);
-  // printf("count: %d\t", move_count);
-
-  previous_move = i % 4;
   ++move_count;
   print_ghost_movements();
 }

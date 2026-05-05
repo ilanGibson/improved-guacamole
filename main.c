@@ -53,8 +53,8 @@ int main() {
   print_board();
   while (1) {
     // process_keypress();
-    random_movement();
-    // usleep(250000);
+    manhattan_chase();
+    usleep(250000);
     if (check_collision()) {
       endgame();
       return 0;
