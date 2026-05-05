@@ -54,7 +54,7 @@ int main() {
   while (1) {
     // process_keypress();
     random_movement();
-    usleep(050000);
+    // usleep(250000);
     if (check_collision()) {
       endgame();
       return 0;
