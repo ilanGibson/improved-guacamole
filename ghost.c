@@ -14,9 +14,16 @@ static int previous_move = -1;
 void manhattan_chase(void) {
   static int move_count = 0;
   char cmds[] = {'h', 'j', 'l', 'k'};
+  /* array of int arrays
+   * [i][0] == y
+   * [i][1] == x
+   * [i][2] == valid move flag */
   int optimal_paths[4][3];
 
   for (int i = 0; i < 4; i++) {
+    /* for each turn check check which move are valid for ghost
+     * if valid, set would be x and y
+     * set valid move flag */
     if (ghost_process_direction(cmds[i], 1)) {
       optimal_paths[i][0] = tgc1.y;
       optimal_paths[i][1] = tgc1.x;
@@ -26,6 +33,7 @@ void manhattan_chase(void) {
     }
   }
 
+  /* for testing */
   // for (int i = 0; i < 4; i++) {
   //   if (optimal_paths[i][2] == 1) {
   //     printf("option %d:\t", i);
@@ -33,15 +41,17 @@ void manhattan_chase(void) {
   //   }
   // }
 
-  printf("count: %d\t", move_count);
+  /* process optimal move calculated from calc_manhattan */
   ghost_process_direction(cmds[calc_manhattan(optimal_paths)], 0);
-  // char t = calc_manhattan(optimal_paths);
-  // printf("t: %d", t);
-  // return;
   ++move_count;
   print_ghost_movements();
+  printf("count: %d\t", move_count);
 }
 
+/* if check_flag
+ * strictly checking which moves are valid
+ * if NOT check_flag
+ * actually moving ghost */
 int ghost_process_direction(char key, char check_flag) {
   int valid_move = 0;
 
@@ -95,12 +105,15 @@ int ghost_process_direction(char key, char check_flag) {
   return valid_move;
 }
 
+/* calculate optimal move where diagonal is not option */
 char calc_manhattan(int options[4][3]) {
   int min = -1;
   char move;
   for (int i = 0; i < 4; i++) {
+    /* if valid move flag set */
     if (options[i][2] == 1) {
       int temp_dist = (abs(options[i][1] - pX) + abs(options[i][0] - pY));
+      /* if first check or temp_dist is new optimal */
       if (min == -1 || temp_dist < min) {
         min = temp_dist;
         move = i;
