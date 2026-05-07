@@ -9,6 +9,7 @@
 #include <unistd.h>
 
 struct termios orig_termios;
+int DIRTY = 0;
 
 void die(const char *s);
 void disable_raw_mode(void);
@@ -59,6 +60,11 @@ int main() {
       endgame();
       return 0;
     }
+
+    if (DIRTY)
+      draw();
+    DIRTY = 0;
+
   }
   return 0;
 }

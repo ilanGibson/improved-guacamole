@@ -50,6 +50,7 @@ void process_keypress(void) {
     write(STDOUT_FILENO, "\x1b[2J", 4);
     write(STDOUT_FILENO, "\x1b[H", 3);
 
+    write(STDOUT_FILENO, "\x1b[?25h", 6);
     exit(0);
     break;
 
@@ -87,5 +88,5 @@ void pacman_process_direction(char key) {
     }
     break;
   }
-  print_player_movements();
+  DIRTY = 1;
 }

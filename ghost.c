@@ -44,7 +44,7 @@ void manhattan_chase(void) {
   /* process optimal move calculated from calc_manhattan */
   ghost_process_direction(cmds[calc_manhattan(optimal_paths)], 0);
   ++move_count;
-  print_ghost_movements();
+  DIRTY = 1;
   printf("count: %d\t", move_count);
 }
 
