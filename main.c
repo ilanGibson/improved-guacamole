@@ -10,10 +10,12 @@
 
 struct termios orig_termios;
 int DIRTY = 0;
+int GHOST_INTERVAL = 200;
 
 void die(const char *s);
 void disable_raw_mode(void);
 void enable_raw_mode(void);
+time_t get_time(void);
 
 #include "board.c"
 #include "endgame.c"
@@ -47,15 +49,34 @@ void enable_raw_mode() {
     die("tcgetattr");
 }
 
+int64_t get_time_ms(void) {
+  struct timespec ts;
+
+  clock_gettime(CLOCK_REALTIME, &ts);
+
+  /* tv_sec -> seconds
+   * tv_nsec -> nanoseconds
+   * multiple seconds by 1000
+   * divide nanoseconds by 1,000,000
+   * add together to get ms */
+  return ((int64_t)ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
+}
+
 int main() {
   srand(time(NULL));
   enable_raw_mode();
 
+  int64_t last_ghost_move = get_time_ms();
   print_board();
   while (1) {
-    // process_keypress();
-    manhattan_chase();
-    usleep(250000);
+    process_keypress();
+
+    int64_t now = get_time_ms();
+    if (now - last_ghost_move > GHOST_INTERVAL) {
+      manhattan_chase();
+      last_ghost_move = get_time_ms();
+    }
+
     if (check_collision()) {
       endgame();
       return 0;
@@ -65,6 +86,9 @@ int main() {
       draw();
     DIRTY = 0;
 
+    // dont know is sleep() is needed
+    // continue testing
+    // usleep(200000);
   }
   return 0;
 }
