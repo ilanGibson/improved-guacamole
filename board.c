@@ -12,14 +12,16 @@ enum direction_key {
 char PACMAN = 'P';
 int pY = 2;
 int pX = 2;
-int old_pY;
-int old_pX;
+// set to avoid intializing to 0
+int old_pY = 2;
+int old_pX = 2;
 
 char GHOST = 'G';
 int gY = 9;
 int gX = 19;
-int old_gY;
-int old_gX;
+// set to avoid intializing to 0
+int old_gY = 9;
+int old_gX = 19;
 
 char *get_cell(int row, int col);
 void set_cell(int row, int col, char value);
@@ -80,6 +82,7 @@ void draw(void) {
    * print 'P' */
   len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", old_pY, old_pX);
   write(STDOUT_FILENO, buf, len);
+  // will replace in future with 'get_current_cell()'
   write(STDOUT_FILENO, ".", 1);
   len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", pY, pX);
   write(STDOUT_FILENO, buf, len);
@@ -91,6 +94,7 @@ void draw(void) {
    * print 'G' */
   len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", old_gY, old_gX);
   write(STDOUT_FILENO, buf, len);
+  // will replace in future with 'get_current_cell()'
   write(STDOUT_FILENO, ".", 1);
   len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", gY, gX);
   write(STDOUT_FILENO, buf, len);
