@@ -66,24 +66,25 @@ void process_keypress(void) {
 void pacman_process_direction(char key) {
   old_pY = pY;
   old_pX = pX;
+  char c;
   switch (key) {
   case ARROW_UP:
-    if (*get_cell((pY - 1), pX) == '.') {
+    if ((c = *get_cell((pY - 1), pX)) == '.' || c == ' ') {
       pY--;
     }
     break;
   case ARROW_DOWN:
-    if (*get_cell((pY + 1), pX) == '.') {
+    if ((c = *get_cell((pY + 1), pX)) == '.' || c == ' ') {
       pY++;
     }
     break;
   case ARROW_RIGHT:
-    if (*get_cell(pY, (pX + 1)) == '.') {
+    if ((c = *get_cell(pY, (pX + 1))) == '.' || c == ' ') {
       pX++;
     }
     break;
   case ARROW_LEFT:
-    if (*get_cell(pY, (pX - 1)) == '.') {
+    if ((c = *get_cell(pY, (pX - 1))) == '.' || c == ' ') {
       pX--;
     }
     break;

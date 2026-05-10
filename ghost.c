@@ -60,9 +60,10 @@ int ghost_process_direction(char key, char check_flag) {
 
   tgc1.y = gY;
   tgc1.x = gX;
+  char c;
   switch (key) {
   case ARROW_UP:
-    if (*get_cell((gY - 1), gX) == '.') {
+    if ((c = *get_cell((gY - 1), gX)) == '.' || c == ' ') {
       valid_move = 1;
       if (check_flag) {
         tgc1.y--;
@@ -72,7 +73,7 @@ int ghost_process_direction(char key, char check_flag) {
     }
     break;
   case ARROW_DOWN:
-    if (*get_cell((gY + 1), gX) == '.') {
+    if ((c = *get_cell((gY + 1), gX)) == '.' || c == ' ') {
       valid_move = 1;
       if (check_flag) {
         tgc1.y++;
@@ -82,7 +83,7 @@ int ghost_process_direction(char key, char check_flag) {
     }
     break;
   case ARROW_RIGHT:
-    if (*get_cell(gY, (gX + 1)) == '.') {
+    if ((c = *get_cell(gY, (gX + 1))) == '.' || c == ' ') {
       valid_move = 1;
       if (check_flag) {
         tgc1.x++;
@@ -92,7 +93,7 @@ int ghost_process_direction(char key, char check_flag) {
     }
     break;
   case ARROW_LEFT:
-    if (*get_cell(gY, (gX - 1)) == '.') {
+    if ((c = *get_cell(gY, (gX - 1))) == '.' || c == ' ') {
       valid_move = 1;
       if (check_flag) {
         tgc1.x--;
