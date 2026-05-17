@@ -1,125 +1,138 @@
-void manhattan_chase(void);
-int ghost_process_direction(char key, char check_flag);
-char calc_manhattan(int options[4][3]);
+#include "ghost.h"
+#include <stdio.h>
 
-struct temp_ghost_cord {
-  int y;
-  int x;
+POS direction[4] = {
+    {0, -1}, // up
+    {-1, 0}, // left
+    {0, 1},  // down
+    {1, 0}   // right
 };
 
-struct temp_ghost_cord tgc1 = {0, 0};
+POS addPositions(POS *curr, POS dir) {
+  POS p;
+  p.x = curr->x + dir.x;
+  p.y = curr->y + dir.y;
 
-static int previous_move = -1;
-
-void manhattan_chase(void) {
-  static int move_count = 0;
-  char cmds[] = {'h', 'j', 'l', 'k'};
-  /* array of int arrays
-   * [i][0] == y
-   * [i][1] == x
-   * [i][2] == valid move flag */
-  int optimal_paths[4][3];
-
-  for (int i = 0; i < 4; i++) {
-    /* for each turn check check which move are valid for ghost
-     * if valid, set would be x and y
-     * set valid move flag */
-    if (ghost_process_direction(cmds[i], 1)) {
-      optimal_paths[i][0] = tgc1.y;
-      optimal_paths[i][1] = tgc1.x;
-      optimal_paths[i][2] = 1;
-    } else {
-      optimal_paths[i][2] = 0;
-    }
-  }
-
-  /* for testing */
-  // for (int i = 0; i < 4; i++) {
-  //   if (optimal_paths[i][2] == 1) {
-  //     printf("option %d:\t", i);
-  //     printf("y: %d, x: %d\n", optimal_paths[i][0], optimal_paths[i][1]);
-  //   }
-  // }
-
-  /* process optimal move calculated from calc_manhattan */
-  ghost_process_direction(cmds[calc_manhattan(optimal_paths)], 0);
-  ++move_count;
-  DIRTY = 1;
-  printf("count: %d\t", move_count);
+  return p;
 }
 
-/* if check_flag
- * strictly checking which moves are valid
- * if NOT check_flag
- * actually moving ghost */
-int ghost_process_direction(char key, char check_flag) {
-  int valid_move = 0;
-
-  old_gY = gY;
-  old_gX = gX;
-
-  tgc1.y = gY;
-  tgc1.x = gX;
-  char c;
-  switch (key) {
-  case ARROW_UP:
-    if ((c = *get_cell((gY - 1), gX)) == '.' || c == ' ') {
-      valid_move = 1;
-      if (check_flag) {
-        tgc1.y--;
-        break;
-      }
-      gY--;
-    }
-    break;
-  case ARROW_DOWN:
-    if ((c = *get_cell((gY + 1), gX)) == '.' || c == ' ') {
-      valid_move = 1;
-      if (check_flag) {
-        tgc1.y++;
-        break;
-      }
-      gY++;
-    }
-    break;
-  case ARROW_RIGHT:
-    if ((c = *get_cell(gY, (gX + 1))) == '.' || c == ' ') {
-      valid_move = 1;
-      if (check_flag) {
-        tgc1.x++;
-        break;
-      }
-      gX++;
-    }
-    break;
-  case ARROW_LEFT:
-    if ((c = *get_cell(gY, (gX - 1))) == '.' || c == ' ') {
-      valid_move = 1;
-      if (check_flag) {
-        tgc1.x--;
-        break;
-      }
-      gX--;
-    }
-    break;
-  }
-  return valid_move;
+char isEqual(POS child, POS target) {
+  return ((child.x == target.x) && (child.y == target.y));
 }
 
-/* calculate optimal move where diagonal is not option */
-char calc_manhattan(int options[4][3]) {
-  int min = -1;
-  char move;
-  for (int i = 0; i < 4; i++) {
-    /* if valid move flag set */
-    if (options[i][2] == 1) {
-      int temp_dist = (abs(options[i][1] - pX) + abs(options[i][0] - pY));
-      /* if first check or temp_dist is new optimal */
-      if (min == -1 || temp_dist < min) {
-        min = temp_dist;
-        move = i;
+void initializeQ(Queue *q) {
+  q->front = -1;
+  q->rear = 0;
+}
+
+char isEmptyQ(Queue *q) { return (q->front == q->rear - 1); }
+char isFullQ(Queue *q) { return (q->rear == MAX_Q); }
+
+void enqueue(Queue *q, POS pos) {
+  if (isFullQ(q)) {
+    printf("enqueue is full\n");
+    return;
+  }
+
+  q->data[q->rear] = pos;
+  q->rear++;
+}
+
+void dequeue(Queue *q) {
+  if (isEmptyQ(q)) {
+    printf("queue is empty\n");
+    return;
+  }
+
+  q->front++;
+}
+
+POS peek(Queue *q) {
+  if (isEmptyQ(q)) {
+    printf("queue is empty\n");
+    return (POS){-1, -1};
+  }
+
+  return (q->data[q->front + 1]);
+}
+
+void printQ(Queue *q) {
+  if (isEmptyQ(q)) {
+    printf("queue is empty\n");
+    return;
+  }
+
+  printf("current queue:\n");
+  for (int i = q->front + 1; i < q->rear; i++) {
+    printf("queue[%d]: x:%d y:%d\n", i, q->data[i].x, q->data[i].y);
+  }
+  printf("end\n");
+}
+
+void BFS_with_path(POS start, POS target, POS *path, int *pathLen) {
+  POS start2 = addPositions(&start, (POS){-1, -1});
+  POS target2 = addPositions(&target, (POS){-1, -1});
+  Queue q;
+  initializeQ(&q);
+  char visited[HEIGHT][WIDTH];
+  POS parent[HEIGHT][WIDTH];
+
+  // initialize parent
+  for (int i = 0; i < HEIGHT; i++) {
+    for (int j = 0; j < WIDTH; j++) {
+      char *tempCell = get_cell(i + 1, j + 1);
+      if (*tempCell == '#' || *tempCell == '|' || *tempCell == '-' ||
+          *tempCell == '_') {
+        visited[i][j] = 1;
+        continue;
+      }
+      visited[i][j] = 0;
+    }
+  }
+
+  visited[start2.y][start2.x] = 1;
+  parent[start2.y][start2.x] = (POS){-1, -1};
+  enqueue(&q, start2);
+
+  while (!isEmptyQ(&q)) {
+    POS curr = peek(&q);
+    dequeue(&q);
+
+    if (visited[target2.y][target2.x]) {
+      POS temp = target2;
+      *(path + *pathLen) = (POS){temp.x, temp.y};
+      (*pathLen)++;
+      while (!isEqual(parent[temp.y][temp.x], (POS){-1, -1})) {
+        // printf("x:%d, y:%d-->\t", parent[temp.y][temp.x].x,
+        //        parent[temp.y][temp.x].y);
+        POS temp2 = parent[temp.y][temp.x];
+        temp = temp2;
+        *(path + *pathLen) = temp;
+        (*pathLen)++;
+      }
+      return;
+    }
+
+    for (int dir = 0; dir < 4; dir++) {
+      POS temp = addPositions(&curr, direction[dir]);
+      // if (temp.y < 0 || temp.x < 0)
+      //   continue;
+      if (!visited[temp.y][temp.x]) {
+        visited[temp.y][temp.x] = 1;
+        parent[temp.y][temp.x] = curr;
+        enqueue(&q, temp);
       }
     }
   }
-  return move;
+}
+
+void process_BFS(POS *path, int *pathLen) {
+  if (*pathLen > 0) {
+    (*pathLen)--;
+    old_gY = gY;
+    old_gX = gX;
+
+    gY = path[*pathLen].y + 1;
+    gX = path[*pathLen].x + 1;
+  }
 }
