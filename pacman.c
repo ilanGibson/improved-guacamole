@@ -1,17 +1,19 @@
+#include "pacman.h"
+#include "board.h"
 #include <errno.h>
-#include <sys/errno.h>
+#include <stdlib.h>
 #include <unistd.h>
-char read_key(void);
-void process_keypress(void);
-void pacman_process_direction(char key);
 
 char read_key(void) {
   int nread;
   char c;
+
+  // ISSUE #16
   // while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
   //   if (nread == -1 && errno != EAGAIN)
   //     die("read");
   // }
+
   nread = read(STDIN_FILENO, &c, 1);
   if (nread == -1 && errno != EAGAIN)
     die("read");

@@ -1,35 +1,18 @@
-#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
-#include <unistd.h> /* for sleep() */
-
-#include <errno.h>
 #include <termios.h>
+#include <time.h>
 #include <unistd.h>
 
-struct termios orig_termios;
-int DIRTY = 0;
-int GHOST_INTERVAL = 200;
+#include "board.h"
+#include "endgame.h"
+#include "ghost.h"
+#include "pacman.h"
 
-void die(const char *s);
+struct termios orig_termios;
 void disable_raw_mode(void);
 void enable_raw_mode(void);
 time_t get_time(void);
-
-#include "board.c"
-#include "endgame.c"
-// #include "ghost.c"
-#include "ghost.h"
-#include "pacman.c"
-
-void die(const char *s) {
-  write(STDOUT_FILENO, "\x1b[2J", 4);
-
-  write(STDOUT_FILENO, "\x1b[H", 3);
-  perror(s);
-  exit(1);
-}
 
 void disable_raw_mode(void) {
   if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1)
@@ -75,7 +58,6 @@ int main(void) {
   int pathLen = 0;
   POS path[100];
   BFS_with_path(start, target, path, &pathLen);
-  printf("here");
 
   while (1) {
     process_keypress();
@@ -96,12 +78,6 @@ int main(void) {
     if (DIRTY)
       draw();
     DIRTY = 0;
-
-    // return 0;
-
-    // dont know is sleep() is needed
-    // continue testing
-    // usleep(200000);
   }
   return 0;
 }

@@ -1,4 +1,5 @@
 #include "ghost.h"
+#include "board.h"
 #include <stdio.h>
 
 POS direction[4] = {
@@ -74,12 +75,12 @@ void BFS_with_path(POS start, POS target, POS *path, int *pathLen) {
   POS target2 = addPositions(&target, (POS){-1, -1});
   Queue q;
   initializeQ(&q);
-  char visited[HEIGHT][WIDTH];
-  POS parent[HEIGHT][WIDTH];
+  char visited[BOARD_HEIGHT][BOARD_WIDTH];
+  POS parent[BOARD_HEIGHT][BOARD_WIDTH];
 
   // initialize parent
-  for (int i = 0; i < HEIGHT; i++) {
-    for (int j = 0; j < WIDTH; j++) {
+  for (int i = 0; i < BOARD_HEIGHT; i++) {
+    for (int j = 0; j < BOARD_WIDTH; j++) {
       char *tempCell = get_cell(i + 1, j + 1);
       if (*tempCell == '#' || *tempCell == '|' || *tempCell == '-' ||
           *tempCell == '_') {
@@ -103,8 +104,6 @@ void BFS_with_path(POS start, POS target, POS *path, int *pathLen) {
       *(path + *pathLen) = (POS){temp.x, temp.y};
       (*pathLen)++;
       while (!isEqual(parent[temp.y][temp.x], (POS){-1, -1})) {
-        // printf("x:%d, y:%d-->\t", parent[temp.y][temp.x].x,
-        //        parent[temp.y][temp.x].y);
         POS temp2 = parent[temp.y][temp.x];
         temp = temp2;
         *(path + *pathLen) = temp;
@@ -115,6 +114,7 @@ void BFS_with_path(POS start, POS target, POS *path, int *pathLen) {
 
     for (int dir = 0; dir < 4; dir++) {
       POS temp = addPositions(&curr, direction[dir]);
+      // ISSUE #23
       // if (temp.y < 0 || temp.x < 0)
       //   continue;
       if (!visited[temp.y][temp.x]) {

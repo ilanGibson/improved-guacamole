@@ -1,37 +1,24 @@
+#include "board.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
-#define HEIGHT 22
-#define WIDTH 30
 
-enum direction_key {
-  ARROW_LEFT = 'h',
-  ARROW_RIGHT = 'l',
-  ARROW_UP = 'k',
-  ARROW_DOWN = 'j'
-};
-
-char PACMAN = 'P';
+const char PACMAN = 'P';
 int pY = 2;
 int pX = 2;
 // set to avoid intializing to 0
 int old_pY = 2;
 int old_pX = 2;
 
-char GHOST = 'G';
-int gY = 9;
-int gX = 19;
+const char GHOST = 'G';
+int gY = 10;
+int gX = 14;
 // set to avoid intializing to 0
-int old_gY = 9;
-int old_gX = 19;
+int old_gY = 10;
+int old_gX = 14;
 
-char *get_cell(int row, int col);
-void set_cell(int row, int col, char value);
-void print_board(void);
-void draw(void);
-void print_player_movements(void);
-void print_ghost_movements(void);
-int check_collision(void);
-
-char BOARD[HEIGHT][WIDTH + 1] = {
+int DIRTY = 0;
+char BOARD[BOARD_HEIGHT][BOARD_WIDTH + 1] = {
     "###########################", "#.........................#",
     "#.#######.#######.#######.#", "#...##....#######....##...#",
     "#.#....##.#######.##....#.#", "#.##.#.##.........##.#.##.#",
@@ -53,8 +40,8 @@ void print_board(void) {
   write(STDOUT_FILENO, "\x1b[2J", 4);
   write(STDOUT_FILENO, "\x1b[H", 3);
   int i, j;
-  for (i = 1; i < HEIGHT + 1; i++) {
-    for (j = 1; j < WIDTH + 1; j++) {
+  for (i = 1; i < BOARD_HEIGHT + 1; i++) {
+    for (j = 1; j < BOARD_WIDTH + 1; j++) {
       if (i == gY && j == gX) {
         write(STDOUT_FILENO, &GHOST, 1);
         continue;
@@ -82,8 +69,10 @@ void draw(void) {
    * print 'P' */
   len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", old_pY, old_pX);
   write(STDOUT_FILENO, buf, len);
+
   // will replace in future with 'get_current_cell()'
   write(STDOUT_FILENO, ".", 1);
+
   len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", pY, pX);
   write(STDOUT_FILENO, buf, len);
   write(STDOUT_FILENO, &PACMAN, 1);
@@ -94,8 +83,10 @@ void draw(void) {
    * print 'G' */
   len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", old_gY, old_gX);
   write(STDOUT_FILENO, buf, len);
+
   // will replace in future with 'get_current_cell()'
   write(STDOUT_FILENO, ".", 1);
+
   len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", gY, gX);
   write(STDOUT_FILENO, buf, len);
   write(STDOUT_FILENO, &GHOST, 1);
@@ -118,4 +109,12 @@ int check_collision(void) {
     return 1;
   }
   return 0;
+}
+
+void die(const char *s) {
+  write(STDOUT_FILENO, "\x1b[2J", 4);
+
+  write(STDOUT_FILENO, "\x1b[H", 3);
+  perror(s);
+  exit(1);
 }

@@ -1,0 +1,35 @@
+#ifndef BOARD_H
+#define BOARD_H
+
+#define GHOST_INTERVAL 200
+enum { BOARD_HEIGHT = 22, BOARD_WIDTH = 30 };
+
+enum direction_key {
+  ARROW_LEFT = 'h',
+  ARROW_RIGHT = 'l',
+  ARROW_UP = 'k',
+  ARROW_DOWN = 'j'
+};
+
+extern const char PACMAN;
+extern int pY;
+extern int pX;
+extern int old_pY;
+extern int old_pX;
+
+extern const char GHOST;
+extern int gY;
+extern int gX;
+extern int old_gY;
+extern int old_gX;
+
+extern int DIRTY;
+
+char *get_cell(int row, int col);
+void set_cell(int row, int col, char value);
+void print_board(void);
+void draw(void);
+int check_collision(void);
+void die(const char *);
+
+#endif
