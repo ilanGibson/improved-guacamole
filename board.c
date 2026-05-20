@@ -1,4 +1,5 @@
 #include "board.h"
+#include "pac_ansi.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -35,10 +36,10 @@ char *get_cell(int row, int col) { return &BOARD[row - 1][col - 1]; }
 void set_cell(int row, int col, char value) { BOARD[row - 1][col - 1] = value; }
 
 void print_board(void) {
-  write(STDOUT_FILENO, "\x1b[?25l", 6);
-
-  write(STDOUT_FILENO, "\x1b[2J", 4);
-  write(STDOUT_FILENO, "\x1b[H", 3);
+  // see pac_ansi.h
+  WRITE_ESC(ESC_HIDE_CURSOR);
+  WRITE_ESC(ESC_CLEAR_SCREEN);
+  WRITE_ESC(ESC_MOVE_CURSOR_HOME);
   int i, j;
   for (i = 1; i < BOARD_HEIGHT + 1; i++) {
     for (j = 1; j < BOARD_WIDTH + 1; j++) {
@@ -55,8 +56,8 @@ void print_board(void) {
     }
     putchar('\n');
   }
-  /* save cursor pos */
-  write(STDOUT_FILENO, "\x1b[s", 3);
+  // save cursor pos for testing
+  WRITE_ESC(ESC_SAVE_CURSOR_POS);
 }
 
 void draw(void) {
@@ -112,12 +113,8 @@ int check_collision(void) {
 }
 
 void die(const char *s) {
-  // clear screen
-  write(STDOUT_FILENO, "\x1b[2J", 4);
-
-  // reset cursor to top left
-  write(STDOUT_FILENO, "\x1b[H", 3);
-  // display GET/SET TERMINAL SETTINGS error
-  perror(s);
+  WRITE_ESC(ESC_CLEAR_SCREEN);
+  WRITE_ESC(ESC_MOVE_CURSOR_HOME);
+  perror(s); // display GET/SET TERMINAL SETTINGS error
   exit(1);
 }

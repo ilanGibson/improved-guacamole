@@ -1,10 +1,11 @@
 #include "endgame.h"
+#include "pac_ansi.h"
 #include <stdio.h>
 #include <unistd.h>
 
 void endgame(void) {
-  write(STDOUT_FILENO, "\x1b[2J", 4);
-  write(STDOUT_FILENO, "\x1b[H", 3);
-  write(STDOUT_FILENO, "\x1b[?25h", 6);
+  WRITE_ESC(ESC_CLEAR_SCREEN);
+  WRITE_ESC(ESC_MOVE_CURSOR_HOME);
+  WRITE_ESC(ESC_SHOW_CURSOR);
   printf("bye");
 }
