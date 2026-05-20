@@ -64,7 +64,6 @@ int main(void) {
 
     int64_t now = get_time_ms();
     if (now - last_ghost_move > GHOST_INTERVAL) {
-      printf("test");
       DIRTY = 1;
       process_BFS(path, &pathLen);
       last_ghost_move = get_time_ms();

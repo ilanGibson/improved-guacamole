@@ -75,10 +75,11 @@ void BFS_with_path(POS start, POS target, POS *path, int *pathLen) {
   POS target2 = addPositions(&target, (POS){-1, -1});
   Queue q;
   initializeQ(&q);
+  // the traversal across graph is implicit
   char visited[BOARD_HEIGHT][BOARD_WIDTH];
-  POS parent[BOARD_HEIGHT][BOARD_WIDTH];
 
   // initialize parent
+  POS parent[BOARD_HEIGHT][BOARD_WIDTH];
   for (int i = 0; i < BOARD_HEIGHT; i++) {
     for (int j = 0; j < BOARD_WIDTH; j++) {
       char *tempCell = get_cell(i + 1, j + 1);

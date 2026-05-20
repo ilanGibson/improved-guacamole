@@ -7,8 +7,8 @@ const char PACMAN = 'P';
 int pY = 2;
 int pX = 2;
 // set to avoid intializing to 0
-int old_pY = 2;
 int old_pX = 2;
+int old_pY = 2;
 
 const char GHOST = 'G';
 int gY = 10;
