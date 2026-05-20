@@ -112,9 +112,12 @@ int check_collision(void) {
 }
 
 void die(const char *s) {
+  // clear screen
   write(STDOUT_FILENO, "\x1b[2J", 4);
 
+  // reset cursor to top left
   write(STDOUT_FILENO, "\x1b[H", 3);
+  // display GET/SET TERMINAL SETTINGS error
   perror(s);
   exit(1);
 }

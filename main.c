@@ -15,12 +15,16 @@ void enable_raw_mode(void);
 time_t get_time(void);
 
 void disable_raw_mode(void) {
+  // attempts to set terminal settings
   if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1)
+    // if attempt fails specify SET TERMINAL SETTINGS error
     die("tcsetattr");
 }
 
 void enable_raw_mode(void) {
+  // attempts to get terminal settings
   if (tcgetattr(STDIN_FILENO, &orig_termios) == -1)
+    // if attempt fails specify GET TERMINAL SETTINGS error
     die("tcgetattr");
   atexit(disable_raw_mode);
 
