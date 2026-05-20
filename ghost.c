@@ -115,9 +115,6 @@ void BFS_with_path(POS start, POS target, POS *path, int *pathLen) {
 
     for (int dir = 0; dir < 4; dir++) {
       POS temp = addPositions(&curr, direction[dir]);
-      // ISSUE #23
-      // if (temp.y < 0 || temp.x < 0)
-      //   continue;
       if (!visited[temp.y][temp.x]) {
         visited[temp.y][temp.x] = 1;
         parent[temp.y][temp.x] = curr;
