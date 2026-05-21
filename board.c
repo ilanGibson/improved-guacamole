@@ -10,6 +10,7 @@ int pX = 2;
 // set to avoid intializing to 0
 int old_pX = 2;
 int old_pY = 2;
+int score = 0;
 
 const char GHOST = 'G';
 int gY = 10;
@@ -33,7 +34,26 @@ char BOARD[BOARD_HEIGHT][BOARD_WIDTH + 1] = {
     "#.........................#", "###########################"};
 
 char *get_cell(int row, int col) { return &BOARD[row - 1][col - 1]; }
-void set_cell(int row, int col, char value) { BOARD[row - 1][col - 1] = value; }
+
+char CURR_BOARD[BOARD_HEIGHT][BOARD_WIDTH + 1] = {
+    "###########################", "#.........................#",
+    "#.#######.#######.#######.#", "#...##....#######....##...#",
+    "#.#....##.#######.##....#.#", "#.##.#.##.........##.#.##.#",
+    "#.#..#.##.#######.##.#..#.#", "#...##.#...........#.##...#",
+    "#.#.##.#.#.## ##.#.#.##.#.#", "#.#......#.|   |.#......#.#",
+    "#.####.#.#.|___|.#.#.####.#", "#.#....#.#.......#.#....#.#",
+    "#.#.####.#.##.##.#.####.#.#", "#...###....##.##....###...#",
+    "#.#.....#.###.###.#.....#.#", "#.#####.#.###.###.#.#####.#",
+    "#.#.....#.###.###.#.....#.#", "#.#.#####.###.###.#####.#.#",
+    "#.........................#", "#.###.#######.#######.###.#",
+    "#.........................#", "###########################"};
+
+char *get_curr_cell(int row, int col) { return &CURR_BOARD[row - 1][col - 1]; }
+void set_curr_cell(int row, int col, char value) {
+  CURR_BOARD[row - 1][col - 1] = value;
+  increase_score();
+}
+void increase_score(void) { score++; }
 
 void print_board(void) {
   // see pac_ansi.h
@@ -47,7 +67,6 @@ void print_board(void) {
         write(STDOUT_FILENO, &GHOST, 1);
         continue;
       }
-
       if (i == pY && j == pX) {
         write(STDOUT_FILENO, &PACMAN, 1);
         continue;
@@ -65,44 +84,40 @@ void draw(void) {
   int len;
 
   /* go to old p pos
-   * print '.'
+   * print get_curr_cell(old pos)
    * go to new p pos
    * print 'P' */
   len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", old_pY, old_pX);
   write(STDOUT_FILENO, buf, len);
-
-  // will replace in future with 'get_current_cell()'
-  write(STDOUT_FILENO, ".", 1);
+  write(STDOUT_FILENO, get_curr_cell(old_pY, old_pX), 1);
 
   len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", pY, pX);
   write(STDOUT_FILENO, buf, len);
   write(STDOUT_FILENO, &PACMAN, 1);
 
-  /* go to old g pos
-   * print '.'
-   * go to new g pos
-   * print 'G' */
-  len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", old_gY, old_gX);
-  write(STDOUT_FILENO, buf, len);
+  /* if (old ghost pos != curr player pos)
+   * go to old g pos
+   * print get_curr_cell(old pos) */
+  // otherwise get bug where player cannot
+  // be directly 'behind' ghost
 
-  // will replace in future with 'get_current_cell()'
-  write(STDOUT_FILENO, ".", 1);
+  /* go to new g pos
+   * print 'G' */
+  if (old_gY != pY || old_gX != pX) {
+    len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", old_gY, old_gX);
+    write(STDOUT_FILENO, buf, len);
+    write(STDOUT_FILENO, get_curr_cell(old_gY, old_gX), 1);
+  }
 
   len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", gY, gX);
   write(STDOUT_FILENO, buf, len);
   write(STDOUT_FILENO, &GHOST, 1);
 
-  // len = snprintf(buf, sizeof(buf), "\x1b[%d;%dH", gY, gX);
-  // write(STDOUT_FILENO, buf, len);
-
-  //   /* for testing; prints coordinates */
-  //   write(STDOUT_FILENO, "\x1b[u", 3); /* put cursor after board */
-  //   write(STDOUT_FILENO, "\x1b[2K", 4);
-  //   len = snprintf(buf, sizeof(buf), "g: %d;%d\n", gY, gX);
-  //   write(STDOUT_FILENO, buf, len);
-  //   len = snprintf(buf, sizeof(buf), "old g: %d;%d\n", old_gY, old_gX);
-  //   write(STDOUT_FILENO, "\x1b[2K", 4);
-  //   write(STDOUT_FILENO, buf, len);
+  /* display score */
+  WRITE_ESC(ESC_LOAD_CURSOR_POS);
+  WRITE_ESC(ESC_CLEAR_LINE);
+  len = snprintf(buf, sizeof(buf), "score: %d\n", score);
+  write(STDOUT_FILENO, buf, len);
 }
 
 int check_collision(void) {

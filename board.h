@@ -26,7 +26,9 @@ extern int old_gX;
 extern int DIRTY;
 
 char *get_cell(int row, int col);
-void set_cell(int row, int col, char value);
+char *get_curr_cell(int row, int col);
+void set_curr_cell(int row, int col, char value);
+void increase_score(void);
 void print_board(void);
 void draw(void);
 int check_collision(void);
