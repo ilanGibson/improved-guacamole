@@ -88,6 +88,9 @@ void pacman_process_direction(char key) {
     if ((c = *get_cell(pY, (pX + 1))) == '.' || c == ' ') {
       pX++;
     }
+    if ((c = *get_cell(pY, (pX + 1))) == '>') {
+      pX = 2;
+    }
     if ((c = *get_curr_cell(pY, pX)) == '.') {
       set_curr_cell(pY, pX, ' ');
     }
@@ -95,6 +98,9 @@ void pacman_process_direction(char key) {
   case ARROW_LEFT:
     if ((c = *get_cell(pY, (pX - 1))) == '.' || c == ' ') {
       pX--;
+    }
+    if ((c = *get_cell(pY, (pX - 1))) == '<') {
+      pX = 26;
     }
     if ((c = *get_curr_cell(pY, pX)) == '.') {
       set_curr_cell(pY, pX, ' ');
