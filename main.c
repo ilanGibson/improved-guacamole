@@ -56,6 +56,10 @@ int main(void) {
 
   int64_t last_ghost_move = get_time_ms();
   print_board();
+  // initialize pacman eatting first '.'
+  // and getting associated score
+  // ISSUE #13
+  set_curr_cell(pY, pX, ' ');
 
   POS start = {gX, gY};
   POS target = {pX, pY};

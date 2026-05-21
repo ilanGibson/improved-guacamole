@@ -2,7 +2,7 @@
 #define BOARD_H
 
 #define GHOST_INTERVAL 200
-enum { BOARD_HEIGHT = 22, BOARD_WIDTH = 30 };
+enum { BOARD_HEIGHT = 22, BOARD_WIDTH = 28 };
 
 enum direction_key {
   ARROW_LEFT = 'h',
@@ -27,6 +27,8 @@ extern int DIRTY;
 
 char *get_cell(int row, int col);
 void set_cell(int row, int col, char value);
+char *get_curr_cell(int row, int col);
+void set_curr_cell(int row, int col, char value);
 void print_board(void);
 void draw(void);
 int check_collision(void);

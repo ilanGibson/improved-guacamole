@@ -72,20 +72,32 @@ void pacman_process_direction(char key) {
     if ((c = *get_cell((pY - 1), pX)) == '.' || c == ' ') {
       pY--;
     }
+    if ((c = *get_curr_cell(pY, pX)) == '.') {
+      set_curr_cell(pY, pX, ' ');
+    }
     break;
   case ARROW_DOWN:
     if ((c = *get_cell((pY + 1), pX)) == '.' || c == ' ') {
       pY++;
+    }
+    if ((c = *get_curr_cell(pY, pX)) == '.') {
+      set_curr_cell(pY, pX, ' ');
     }
     break;
   case ARROW_RIGHT:
     if ((c = *get_cell(pY, (pX + 1))) == '.' || c == ' ') {
       pX++;
     }
+    if ((c = *get_curr_cell(pY, pX)) == '.') {
+      set_curr_cell(pY, pX, ' ');
+    }
     break;
   case ARROW_LEFT:
     if ((c = *get_cell(pY, (pX - 1))) == '.' || c == ' ') {
       pX--;
+    }
+    if ((c = *get_curr_cell(pY, pX)) == '.') {
+      set_curr_cell(pY, pX, ' ');
     }
     break;
   }
