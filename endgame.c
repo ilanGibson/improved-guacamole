@@ -7,5 +7,5 @@ void endgame(void) {
   WRITE_ESC(ESC_CLEAR_SCREEN);
   WRITE_ESC(ESC_MOVE_CURSOR_HOME);
   WRITE_ESC(ESC_SHOW_CURSOR);
-  printf("bye");
+  printf("%ld\n", __STDC_VERSION__);
 }
