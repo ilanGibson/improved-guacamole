@@ -2,7 +2,7 @@
 #define BOARD_H
 
 #define GHOST_INTERVAL 200
-enum { BOARD_HEIGHT = 22, BOARD_WIDTH = 30 };
+enum { BOARD_HEIGHT = 22, BOARD_WIDTH = 28 };
 
 enum direction_key {
   ARROW_LEFT = 'h',
