@@ -88,4 +88,5 @@ void pacman_process_direction(char key) {
     break;
   }
   DIRTY = 1;
+  DIRTY_PACMAN = 1;
 }

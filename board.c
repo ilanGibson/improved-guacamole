@@ -20,6 +20,7 @@ int old_gY = 10;
 int old_gX = 14;
 
 int DIRTY = 0;
+int DIRTY_PACMAN = 0;
 char BOARD[BOARD_HEIGHT][BOARD_WIDTH + 1] = {
     "###########################", "#.........................#",
     "<.#######.#######.#######.>", "#...##....#######....##...#",
@@ -34,6 +35,20 @@ char BOARD[BOARD_HEIGHT][BOARD_WIDTH + 1] = {
     "#.........................#", "###########################"};
 
 char *get_cell(int row, int col) { return &BOARD[row - 1][col - 1]; }
+int get_board_quadrant(int row, int col) {
+  /* q = 3 -> bottom right quad
+   * q = 2 -> bottom left quad
+   * q = 1 -> top right quad
+   * q = 0 -> top left quad */
+
+  int q = 3;
+  if (row <= 10)
+    q -= 2;
+  if (col <= 13)
+    q -= 1;
+
+  return q;
+}
 
 char CURR_BOARD[BOARD_HEIGHT][BOARD_WIDTH + 1] = {
     "###########################", "#.........................#",

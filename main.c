@@ -55,6 +55,7 @@ int main(void) {
   enable_raw_mode();
 
   int64_t last_ghost_move = get_time_ms();
+  int64_t last_BFS_calc = get_time_ms();
   print_board();
   // initialize pacman eatting first '.'
   set_curr_cell(pY, pX, ' ');
@@ -65,11 +66,33 @@ int main(void) {
   POS path[100];
   BFS_with_path(start, target, path, &pathLen);
 
+  // player starting quadrant
+  int p_quad = get_board_quadrant(pY, pX);
   while (1) {
     process_keypress();
 
     int64_t now = get_time_ms();
     if (now - last_ghost_move > GHOST_INTERVAL) {
+
+      int temp_p_quad = get_board_quadrant(pY, pX);
+      // if pacman in new quadrant
+      // new BFS_with_path
+      if (temp_p_quad != p_quad && (now - last_BFS_calc > BFS_INTERVAL)) {
+        p_quad = temp_p_quad;
+        pathLen = 0;
+        BFS_with_path((POS){gX, gY}, (POS){pX, pY}, path, &pathLen);
+      } else {
+        int temp_g_quad = get_board_quadrant(gY, gX);
+        // otherwise
+        // if ghost quadrant == pacman_quadrant && pacman has moved
+        // new BFS_with_path
+        if (temp_g_quad == temp_p_quad && DIRTY_PACMAN) {
+          DIRTY_PACMAN = 0;
+          pathLen = 0;
+          BFS_with_path((POS){gX, gY}, (POS){pX, pY}, path, &pathLen);
+        }
+      }
+
       DIRTY = 1;
       process_BFS(path, &pathLen);
       last_ghost_move = get_time_ms();
@@ -79,7 +102,6 @@ int main(void) {
       endgame();
       return 0;
     }
-
     if (DIRTY)
       draw();
     DIRTY = 0;
