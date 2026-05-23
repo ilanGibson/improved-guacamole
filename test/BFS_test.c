@@ -1,4 +1,4 @@
-#include "ghost.h"
+#include "../ghost.h"
 #include <assert.h>
 #include <stdio.h>
 
