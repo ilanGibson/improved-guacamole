@@ -1,6 +1,7 @@
 #ifndef ENDGAME_H
 #define ENDGAME_H
 
-void endgame(void);
+int endgame(void);
+void endgame_quit(void);
 
 #endif

@@ -30,7 +30,7 @@ void process_keypress(void) {
 
   switch (c) {
   case ('q'):
-    endgame();
+    endgame_quit();
     exit(0);
     break;
 

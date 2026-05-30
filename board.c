@@ -5,19 +5,29 @@
 #include <unistd.h>
 
 const char PACMAN = 'P';
-int pY = 2;
-int pX = 2;
-// set to avoid intializing to 0
-int old_pX = 2;
-int old_pY = 2;
+int pY;
+int pX;
+int old_pY;
+int old_pX;
 int score = 0;
 
 const char GHOST = 'G';
-int gY = 10;
-int gX = 14;
-// set to avoid intializing to 0
-int old_gY = 10;
-int old_gX = 14;
+int gY;
+int gX;
+int old_gY;
+int old_gX;
+
+void initialize_pieces(void) {
+  pY = 2;
+  pX = 2;
+  old_pY = pY;
+  old_pX = pX;
+
+  gY = 10;
+  gX = 14;
+  old_gY = gY;
+  old_gX = gX;
+}
 
 int DIRTY = 0;
 int DIRTY_PACMAN = 0;

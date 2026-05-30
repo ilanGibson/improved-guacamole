@@ -50,7 +50,8 @@ int64_t get_time_ms(void) {
   return ((int64_t)ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
 }
 
-int main(void) {
+void run_program() {
+  initialize_pieces();
   srand(time(NULL));
   enable_raw_mode();
 
@@ -73,7 +74,6 @@ int main(void) {
   // int p_quad = get_board_quadrant(pY, pX);
   while (1) {
     process_keypress();
-
     int64_t now = get_time_ms();
     if (now - last_ghost_move > GHOST_INTERVAL) {
 
@@ -103,12 +103,23 @@ int main(void) {
     }
 
     if (check_collision()) {
-      endgame();
-      return 0;
+      return;
     }
     if (DIRTY)
       draw();
     DIRTY = 0;
+  }
+  return;
+}
+
+int main(void) {
+
+  while (1) {
+    run_program();
+    disable_raw_mode();
+    if (!endgame()) {
+      break;
+    }
   }
   return 0;
 }
