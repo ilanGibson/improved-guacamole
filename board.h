@@ -27,7 +27,7 @@ extern int old_gX;
 extern int DIRTY;
 extern int DIRTY_PACMAN;
 
-void initialize_pieces(void);
+void initialize_game(void);
 char *get_cell(int row, int col);
 int get_board_quadrant(int row, int col);
 char *get_curr_cell(int row, int col);

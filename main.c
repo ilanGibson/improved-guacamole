@@ -51,7 +51,7 @@ int64_t get_time_ms(void) {
 }
 
 void run_program() {
-  initialize_pieces();
+  initialize_game();
   srand(time(NULL));
   enable_raw_mode();
 

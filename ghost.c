@@ -180,7 +180,7 @@ void heapDOWN(PQ *pq, int index) {
 
   if (smallest != index) {
     swap(&pq->data[index], &pq->data[smallest]);
-    heapUP(pq, smallest);
+    heapDOWN(pq, smallest);
   }
 }
 
@@ -220,9 +220,12 @@ void a_star_with_path(POS start, POS target, POS *path, int *pathLen) {
   char visited[BOARD_HEIGHT][BOARD_WIDTH];
   POS parent[BOARD_HEIGHT][BOARD_WIDTH];
   initializeParent(&parent, visited);
+  double g_n[BOARD_HEIGHT][BOARD_WIDTH];
+  initializeGn(g_n);
 
   visited[start2.y][start2.x] = 1;
   parent[start2.y][start2.x] = (POS){-1, -1};
+  g_n[start2.y][start2.x] = 0;
 
   start2.fn = 0;
   enqueuePQ(&pq, start2);
@@ -245,7 +248,8 @@ void a_star_with_path(POS start, POS target, POS *path, int *pathLen) {
 
     for (int dir = 0; dir < 4; dir++) {
       POS temp = addPositions(&curr, direction[dir]);
-      if (temp.y < 0 || temp.x < 0 || temp.y > 21 || temp.x > 27) {
+      if (temp.y < 0 || temp.x < 0 || temp.y > (BOARD_HEIGHT - 1) ||
+          temp.x > (BOARD_WIDTH - 1)) {
         continue;
       }
       temp.fn = calc_manhattan(temp, target2);

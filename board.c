@@ -17,11 +17,13 @@ int gX;
 int old_gY;
 int old_gX;
 
-void initialize_pieces(void) {
-  pY = 2;
+void initialize_game(void) {
+  pY = 3;
   pX = 2;
   old_pY = pY;
   old_pX = pX;
+
+  score = 0;
 
   gY = 10;
   gX = 14;
