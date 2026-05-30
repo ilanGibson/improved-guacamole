@@ -60,41 +60,45 @@ int main(void) {
   // initialize pacman eatting first '.'
   set_curr_cell(pY, pX, ' ');
 
-  POS start = {gX, gY};
-  POS target = {pX, pY};
+  POS start = {gX, gY, 0};
+  POS target = {pX, pY, 0};
   int pathLen = 0;
   POS path[100];
-  BFS_with_path(start, target, path, &pathLen);
+  a_star_with_path(start, target, path, &pathLen);
+  // return 0;
+
+  // BFS_with_path(start, target, path, &pathLen);
 
   // player starting quadrant
-  int p_quad = get_board_quadrant(pY, pX);
+  // int p_quad = get_board_quadrant(pY, pX);
   while (1) {
     process_keypress();
 
     int64_t now = get_time_ms();
     if (now - last_ghost_move > GHOST_INTERVAL) {
 
-      int temp_p_quad = get_board_quadrant(pY, pX);
-      // if pacman in new quadrant
-      // new BFS_with_path
-      if (temp_p_quad != p_quad && (now - last_BFS_calc > BFS_INTERVAL)) {
-        p_quad = temp_p_quad;
-        pathLen = 0;
-        BFS_with_path((POS){gX, gY}, (POS){pX, pY}, path, &pathLen);
-      } else {
-        int temp_g_quad = get_board_quadrant(gY, gX);
-        // otherwise
-        // if ghost quadrant == pacman_quadrant && pacman has moved
-        // new BFS_with_path
-        if (temp_g_quad == temp_p_quad && DIRTY_PACMAN) {
-          DIRTY_PACMAN = 0;
-          pathLen = 0;
-          BFS_with_path((POS){gX, gY}, (POS){pX, pY}, path, &pathLen);
-        }
-      }
+      // int temp_p_quad = get_board_quadrant(pY, pX);
+      // // if pacman in new quadrant
+      // // new BFS_with_path
+      // if (temp_p_quad != p_quad && (now - last_BFS_calc > BFS_INTERVAL)) {
+      //   p_quad = temp_p_quad;
+      //   pathLen = 0;
+      //   BFS_with_path((POS){gX, gY}, (POS){pX, pY}, path, &pathLen);
+      // } else {
+      //   int temp_g_quad = get_board_quadrant(gY, gX);
+      //   // otherwise
+      //   // if ghost quadrant == pacman_quadrant && pacman has moved
+      //   // new BFS_with_path
+      //   if (temp_g_quad == temp_p_quad && DIRTY_PACMAN) {
+      //     DIRTY_PACMAN = 0;
+      //     pathLen = 0;
+      //     BFS_with_path((POS){gX, gY}, (POS){pX, pY}, path, &pathLen);
+      //   }
+      // }
 
       DIRTY = 1;
-      process_BFS(path, &pathLen);
+      // process_BFS(path, &pathLen);
+      process_a_star(path, &pathLen);
       last_ghost_move = get_time_ms();
     }
 
