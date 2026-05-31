@@ -80,7 +80,7 @@ void pacman_process_direction(char key) {
       pX--;
     }
     if ((c = *get_cell(pY, (pX - 1))) == '<') {
-      pX = 26;
+      pX = BOARD_WIDTH - 2;
     }
     if ((c = *get_curr_cell(pY, pX)) == '.') {
       set_curr_cell(pY, pX, ' ');

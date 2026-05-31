@@ -11,8 +11,7 @@ typedef struct {
 
 POS addPosition(POS *curr, POS dir);
 char isEqual(POS child, POS target);
-void initializeParent(POS (*parent)[][BOARD_WIDTH],
-                      char visited[][BOARD_WIDTH]);
+void initializeParent(char visited[][BOARD_WIDTH]);
 
 typedef struct {
   int front;

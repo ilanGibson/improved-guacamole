@@ -50,7 +50,7 @@ int64_t get_time_ms(void) {
   return ((int64_t)ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
 }
 
-void run_program() {
+void run_program(void) {
   initialize_game();
   srand(time(NULL));
   enable_raw_mode();

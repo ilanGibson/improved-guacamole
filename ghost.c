@@ -1,5 +1,6 @@
 #include "ghost.h"
 #include "board.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -22,17 +23,24 @@ char isEqual(POS child, POS target) {
   return ((child.x == target.x) && (child.y == target.y));
 }
 
-void initializeParent(POS (*parent)[][BOARD_WIDTH],
-                      char visited[][BOARD_WIDTH]) {
+void initializeParent(char closed[][BOARD_WIDTH]) {
   for (int i = 0; i < BOARD_HEIGHT; i++) {
     for (int j = 0; j < BOARD_WIDTH; j++) {
       char *tempCell = get_cell(i + 1, j + 1);
       if (*tempCell == '#' || *tempCell == '|' || *tempCell == '-' ||
           *tempCell == '_') {
-        visited[i][j] = 1;
+        closed[i][j] = 1;
         continue;
       }
-      visited[i][j] = 0;
+      closed[i][j] = 0;
+    }
+  }
+}
+
+void initializeGn(double(g_n[BOARD_HEIGHT][BOARD_WIDTH])) {
+  for (int i = 0; i < BOARD_HEIGHT; i++) {
+    for (int j = 0; j < BOARD_WIDTH; j++) {
+      g_n[i][j] = INFINITY;
     }
   }
 }
@@ -94,7 +102,7 @@ void BFS_with_path(POS start, POS target, POS *path, int *pathLen) {
   // the traversal across graph is implicit
   char visited[BOARD_HEIGHT][BOARD_WIDTH];
   POS parent[BOARD_HEIGHT][BOARD_WIDTH];
-  initializeParent(&parent, visited);
+  initializeParent(visited);
 
   visited[start2.y][start2.x] = 1;
   parent[start2.y][start2.x] = (POS){-1, -1};
@@ -217,23 +225,27 @@ void a_star_with_path(POS start, POS target, POS *path, int *pathLen) {
   PQ pq;
   initializePQ(&pq);
 
-  char visited[BOARD_HEIGHT][BOARD_WIDTH];
+  // closed means node has beed removed from PQ and fully processed
+  char closed[BOARD_HEIGHT][BOARD_WIDTH];
   POS parent[BOARD_HEIGHT][BOARD_WIDTH];
-  initializeParent(&parent, visited);
+  initializeParent(closed);
   double g_n[BOARD_HEIGHT][BOARD_WIDTH];
   initializeGn(g_n);
 
-  visited[start2.y][start2.x] = 1;
   parent[start2.y][start2.x] = (POS){-1, -1};
   g_n[start2.y][start2.x] = 0;
-
   start2.fn = 0;
   enqueuePQ(&pq, start2);
 
   while (pq.size) {
     POS curr = deququePQ(&pq);
 
-    if (visited[target2.y][target2.x]) {
+    if (closed[curr.y][curr.x]) {
+      continue;
+    }
+    closed[curr.y][curr.x] = 1;
+
+    if (isEqual(curr, target2)) {
       POS temp = target2;
       *(path + *pathLen) = (POS){temp.x, temp.y};
       (*pathLen)++;
@@ -248,16 +260,25 @@ void a_star_with_path(POS start, POS target, POS *path, int *pathLen) {
 
     for (int dir = 0; dir < 4; dir++) {
       POS temp = addPositions(&curr, direction[dir]);
-      if (temp.y < 0 || temp.x < 0 || temp.y > (BOARD_HEIGHT - 1) ||
-          temp.x > (BOARD_WIDTH - 1)) {
+      char temp_cell = *get_cell(temp.y + 1, temp.x + 1);
+      if (temp_cell != ' ' && temp_cell != '.') {
         continue;
       }
-      temp.fn = calc_manhattan(temp, target2);
-      if (!visited[temp.y][temp.x]) {
-        visited[temp.y][temp.x] = 1;
-        parent[temp.y][temp.x] = curr;
-        enqueuePQ(&pq, temp);
+      // ISSUE #31
+      // if (temp.y < 0 || temp.x < 0 || temp.y > (BOARD_HEIGHT - 1) ||
+      //     temp.x > (BOARD_WIDTH - 1)) {
+      //   continue;
+      // }
+      int tenative_g = g_n[curr.y][curr.x] + 1;
+      if (!(tenative_g < g_n[temp.y][temp.x])) {
+        continue;
       }
+      // update g(n)
+      g_n[temp.y][temp.x] = tenative_g;
+      int temp_h = calc_manhattan(temp, target2);
+      temp.fn = tenative_g + temp_h;
+      parent[temp.y][temp.x] = curr;
+      enqueuePQ(&pq, temp);
     }
   }
 }
