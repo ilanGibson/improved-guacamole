@@ -8,13 +8,25 @@ How does the choice of pathfinding algorithm affect the efficiency and reliabili
 As pathfinding algorithms become more sophisticated, they will locate the target more efficiently and more reliably. A* is expected to achieve the highest success rate while requiring fewer iterations and less execution time than BFS. Algorithms that rely only on local information, such as Manhattan distance based movement, are expected to perform poorly in maps containing obstacles.
 
 
-### Data 
+### Data (closed map*)
 | Algorithm | Success Rate % | Average Runtime (ms) | Average Iterations |
 |-----------|----------------|----------------------|--------------------|
-| Random    | 
-| Manhattan |
-| BFS       |
-| A*        |
+| Random    | .4             | 86.54                | 498000             |
+| Manhattan | 0              | 8.96                 | 500000             |
+| BFS       | 100            | .029                 | 77                 |
+| A*        | 100            | .068                 | 16                 |
+
+### Data (open map*)
+| Algorithm | Success Rate % | Average Runtime (ms) | Average Iterations |
+|-----------|----------------|----------------------|--------------------|
+| Random    | 9.8            | 16.07                | 465164             |
+| Manhattan | .8             | 7.72                 | 443001             |
+| BFS       | 100            | .046                 | 205                |
+| A*        | 100            | .053                 | 24                 |
+
+* max of 500,000 moves allowed before failed attempt
+* closed map has full set of routes created by walls
+* open map has significantly less walls
 
 ### Graphs
 
