@@ -29,8 +29,7 @@ As pathfinding algorithms become more sophisticated, they will locate the target
 * open map has significantly less walls
 
 ### Analysis
-![Open Map](./imgs/open_map.png)
-![Closed Map](./imgs/closed_map.png)
+![Open Map](./imgs/open_map.png) ![Closed Map](./imgs/closed_map.png)
 
 ### Graphs
 
