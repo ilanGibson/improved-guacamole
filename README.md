@@ -28,9 +28,11 @@ As pathfinding algorithms become more sophisticated, they will locate the target
 * closed map has full set of routes created by walls
 * open map has significantly less walls
 
-### Graphs
-
 ### Analysis
+![Open Map](./imgs/open_map.png)
+![Closed Map](./imgs/closed_map.png)
+
+### Graphs
 
 ### Conclusion
 The results supported the hypothesis. Algorithms that used more advanced search techniques generally performed better than simpler approaches. Random movement was inefficient and unreliable. Manhattan-distance-based movement was fast but often failed when obstacles blocked the direct route to the target. BFS consistently found a valid path but required a larger number of iterations. A* achieved a high success rate while exploring fewer nodes and requiring less computation than BFS. These results demonstrate how algorithm design can significantly affect the efficiency and reliability of pathfinding in video games and other navigation problems.
