@@ -1,4 +1,4 @@
-# Comparitive Analysis of Search Algorithms for Pathfinding
+# Comparative Analysis of Search Algorithms for Pathfinding
 Hubba Bubba School for Gifted Elephants & Tiny Humans 2026 Science Fair
 
 ## Project Question
